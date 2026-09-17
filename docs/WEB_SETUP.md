@@ -30,11 +30,11 @@ source /opt/ros/jazzy/setup.bash
 ```bash
 mkdir -p "$HOME/pinky_web_ws/src"
 cd "$HOME/pinky_web_ws"
-git clone --branch pinky_pro/web-fleet https://github.com/0gpublike/pinky_pro_team11.git src/pinky_pro_team11
-vcs import src < src/pinky_pro_team11/web_dependencies.repos
+git clone --branch pinky_pro/web-fleet https://github.com/0gpublike/pinky_pro_team10.git src/pinky_pro_team10
+vcs import src < src/pinky_pro_team10/web_dependencies.repos
 ```
 
-두 저장소를 받는다. `pinky_pro_team11`에는 팀 Fleet와 웹 확장이 있고,
+두 저장소를 받는다. `pinky_pro_team10`에는 팀 Fleet와 웹 확장이 있고,
 `pinky_pro`에는 순정 로봇 모델·내비게이션·Gazebo 패키지가 있다.
 `.repos` 파일은 검증한 순정 커밋을 지정하므로 최신 버전 변경에 따른 차이를 줄인다.
 
@@ -125,7 +125,7 @@ Gazebo 노드가 실제로 서로 다른 도메인에 있다는 뜻은 아니다
 ## 7. 검증과 알려진 문제
 
 ```bash
-cd "$HOME/pinky_web_ws/src/pinky_pro_team11/pinky_fleet_station"
+cd "$HOME/pinky_web_ws/src/pinky_pro_team10/pinky_fleet_station"
 python3 -m pytest test/test_web_node.py test/test_mission_io.py test/test_web_manager.py test/test_map_paths.py -q
 ```
 
@@ -147,7 +147,7 @@ python3 -m pytest test/test_web_node.py test/test_mission_io.py test/test_web_ma
 업데이트를 받기 전 로컬 수정 내용을 커밋하고, 실행 중인 환경을 종료한 다음:
 
 ```bash
-cd "$HOME/pinky_web_ws/src/pinky_pro_team11"
+cd "$HOME/pinky_web_ws/src/pinky_pro_team10"
 git pull --ff-only origin pinky_pro/web-fleet
 cd "$HOME/pinky_web_ws"
 colcon build --symlink-install --packages-up-to pinky_fleet_station pinky_fleet_sim

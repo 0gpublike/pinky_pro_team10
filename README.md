@@ -1,4 +1,6 @@
-# pinky_pro_team11 — 핑키 프로 2대 멀티로봇 관제
+# pinky_pro_team10 — Team10 핑키 프로 2대 멀티로봇 관제
+
+Team10의 웹 관제 개발 저장소입니다. 원본 Fleet 코드는 [sakim0128/pinky_pro_team11](https://github.com/sakim0128/pinky_pro_team11)에서 가져왔으며, 원본 작성자·maintainer 표기는 보존합니다.
 
 > **웹 관제 개발 브랜치 (`pinky_pro/web-fleet`)**: [팀원 설치·실행](docs/WEB_SETUP.md) · [원본과 변경 범위](docs/WEB_CHANGES.md) · [화면 사용법](pinky_fleet_station/WEB_GUIDE.md). 아래 본문은 기존 팀 PyQt/실물 관제 설명입니다.
 
@@ -104,13 +106,13 @@ flowchart TB
 따로 옮기지 말고 저장소를 통째로** 넣는다.
 
 **`colcon build` 는 반드시 워크스페이스 루트(`~/pinky_pro`, `~/fleet_ws`)에서 돌린다.**
-저장소 디렉터리 안에서 돌리면 `src/pinky_pro_team11/install/` 이라는 워크스페이스가
+저장소 디렉터리 안에서 돌리면 `src/pinky_pro_team10/install/` 이라는 워크스페이스가
 하나 더 생기고, 그쪽이 `AMENT_PREFIX_PATH` 를 선점해 `git pull` 을 해도 옛 빌드가 계속
 쓰인다. 증상이 헷갈린다 — 소스는 최신인데 launch 인자가 예전 것으로 동작한다.
 그런 상태라면 이렇게 정리한다.
 
 ```bash
-rm -rf ~/pinky_pro/src/pinky_pro_team11/{build,install,log}
+rm -rf ~/pinky_pro/src/pinky_pro_team10/{build,install,log}
 grep -n "setup.bash" ~/.bashrc          # 중첩 install 을 source 하는 줄이 있으면 삭제
 # 새 터미널을 열고 다시 빌드
 ```
@@ -125,9 +127,9 @@ ros2 pkg prefix pinky_fleet_agent       # ~/pinky_pro/install/... 이어야 정�
 `pinky_bringup` / `pinky_navigation` 을 include 하므로 같은 워크스페이스여야 한다.
 
 ```bash
-git clone -b mini_project_1 \
-    https://github.com/sakim0128/pinky_pro_team11.git ~/pinky_pro/src/pinky_pro_team11
-# 이미 홈에 받아 뒀다면:  mv ~/pinky_pro_team11 ~/pinky_pro/src/
+git clone -b pinky_pro/web-fleet \
+    https://github.com/0gpublike/pinky_pro_team10.git ~/pinky_pro/src/pinky_pro_team10
+# 이미 홈에 받아 뒀다면:  mv ~/pinky_pro_team10 ~/pinky_pro/src/
 
 cd ~/pinky_pro
 colcon build --packages-select pinky_fleet_msgs pinky_fleet_agent
@@ -152,9 +154,9 @@ source ~/pinky_pro/install/setup.bash
 sudo apt install ros-jazzy-domain-bridge python3-pyqt5 python3-numpy
 
 mkdir -p ~/fleet_ws/src
-git clone -b mini_project_1 \
-    https://github.com/sakim0128/pinky_pro_team11.git ~/fleet_ws/src/pinky_pro_team11
-# 이미 홈에 받아 뒀다면:  mv ~/pinky_pro_team11 ~/fleet_ws/src/
+git clone -b pinky_pro/web-fleet \
+    https://github.com/0gpublike/pinky_pro_team10.git ~/fleet_ws/src/pinky_pro_team10
+# 이미 홈에 받아 뒀다면:  mv ~/pinky_pro_team10 ~/fleet_ws/src/
 
 cd ~/fleet_ws
 colcon build --packages-select pinky_fleet_msgs pinky_fleet_station
@@ -193,7 +195,7 @@ scp pinky@<핑키1_IP>:/home/pinky/map/pinklab.* ~/maps/
 yaml 을 직접 고쳐도 된다 — 아래 파일의 `map.yaml_path`.
 
 ```
-~/fleet_ws/src/pinky_pro_team11/pinky_fleet_station/config/mission.yaml
+~/fleet_ws/src/pinky_pro_team10/pinky_fleet_station/config/mission.yaml
 ```
 
 같은 디렉터리의 `mission_deadlock_test.yaml` 도 마찬가지.
@@ -262,7 +264,7 @@ ros2 launch pinky_fleet_agent robot.launch.xml robot_name:=pinky2 domain_id:=11
 # 관제 PC
 export ROS_DOMAIN_ID=0
 ros2 launch pinky_fleet_station fleet.launch.xml \
-    mission:=$HOME/fleet_ws/src/pinky_pro_team11/pinky_fleet_station/config/mission.yaml
+    mission:=$HOME/fleet_ws/src/pinky_pro_team10/pinky_fleet_station/config/mission.yaml
 ```
 
 ### GUI 조작 순서
@@ -342,7 +344,7 @@ sequenceDiagram
 ```bash
 export ROS_DOMAIN_ID=0
 ros2 launch pinky_fleet_station fake_fleet.launch.xml \
-    mission:=$HOME/fleet_ws/src/pinky_pro_team11/pinky_fleet_station/config/mission_deadlock_test.yaml \
+    mission:=$HOME/fleet_ws/src/pinky_pro_team10/pinky_fleet_station/config/mission_deadlock_test.yaml \
     auto_start:=True
 
 # 다른 터미널
@@ -355,7 +357,7 @@ GUI 는 브리지를 쓰든 가짜 로봇을 쓰든 똑같이 동작한다.
 단위 테스트 (ROS · 가제보 없이 돈다):
 
 ```bash
-cd ~/fleet_ws/src/pinky_pro_team11
+cd ~/fleet_ws/src/pinky_pro_team10
 QT_QPA_PLATFORM=offscreen python3 -m pytest pinky_fleet_station/test pinky_fleet_agent/test -q
 ```
 
