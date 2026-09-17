@@ -1,6 +1,6 @@
 # 팀원용 웹 Fleet 설치·실행 안내
 
-이 문서는 `gigi/web-fleet` 브랜치 기준이다. 기존 PyQt 사용법은 루트 README에 있다.
+이 문서는 `pinky_pro/web-fleet` 브랜치 기준이다. 기존 PyQt 사용법은 루트 README에 있다.
 처음에는 Gazebo로 실행 흐름을 확인한다. 현재는 개발 버전이며 실물 주행 검증은 아직 하지 않았다.
 
 ## 1. 준비
@@ -30,7 +30,7 @@ source /opt/ros/jazzy/setup.bash
 ```bash
 mkdir -p "$HOME/pinky_web_ws/src"
 cd "$HOME/pinky_web_ws"
-git clone --branch gigi/web-fleet https://github.com/0gpublike/pinky_pro_team11.git src/pinky_pro_team11
+git clone --branch pinky_pro/web-fleet https://github.com/0gpublike/pinky_pro_team11.git src/pinky_pro_team11
 vcs import src < src/pinky_pro_team11/web_dependencies.repos
 ```
 
@@ -143,12 +143,12 @@ python3 -m pytest test/test_web_node.py test/test_mission_io.py test/test_web_ma
 
 ## 8. 팀원과 변경 공유
 
-이 사본의 개발 브랜치는 `gigi/web-fleet`이다. `build/`, `install/`, `log/`는 Git에 넣지 않는다.
+이 사본의 개발 브랜치는 `pinky_pro/web-fleet`이다. `build/`, `install/`, `log/`는 Git에 넣지 않는다.
 업데이트를 받기 전 로컬 수정 내용을 커밋하고, 실행 중인 환경을 종료한 다음:
 
 ```bash
 cd "$HOME/pinky_web_ws/src/pinky_pro_team11"
-git pull --ff-only origin gigi/web-fleet
+git pull --ff-only origin pinky_pro/web-fleet
 cd "$HOME/pinky_web_ws"
 colcon build --symlink-install --packages-up-to pinky_fleet_station pinky_fleet_sim
 source install/setup.bash

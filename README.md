@@ -1,6 +1,6 @@
 # pinky_pro_team11 — 핑키 프로 2대 멀티로봇 관제
 
-> **웹 관제 개발 브랜치 (`gigi/web-fleet`)**: [팀원 설치·실행](docs/WEB_SETUP.md) · [원본과 변경 범위](docs/WEB_CHANGES.md) · [화면 사용법](pinky_fleet_station/WEB_GUIDE.md). 아래 본문은 기존 팀 PyQt/실물 관제 설명입니다.
+> **웹 관제 개발 브랜치 (`pinky_pro/web-fleet`)**: [팀원 설치·실행](docs/WEB_SETUP.md) · [원본과 변경 범위](docs/WEB_CHANGES.md) · [화면 사용법](pinky_fleet_station/WEB_GUIDE.md). 아래 본문은 기존 팀 PyQt/실물 관제 설명입니다.
 
 관제 PC 한 대에서 [Pinky Pro](https://github.com/pinklab-art/pinky_pro) 2대를 동시에 제어한다.
 GUI 맵 위에 목표를 찍으면 두 대가 동시에 출발하고, 좁은 길에서 서로 막히면
