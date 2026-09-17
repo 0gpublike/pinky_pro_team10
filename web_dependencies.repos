@@ -1,0 +1,6 @@
+# 웹/Gazebo 연결 검증에 사용한 upstream 버전. 팀 저장소는 별도로 clone한다.
+repositories:
+  pinky_pro:
+    type: git
+    url: https://github.com/pinklab-art/pinky_pro.git
+    version: 75f76e8b7cd971c32c07233f7accd418dab1d6b4

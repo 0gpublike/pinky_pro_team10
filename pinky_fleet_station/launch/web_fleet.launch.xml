@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="mission" default="$(find-pkg-share pinky_fleet_station)/config/mission_web.yaml"/>
+  <arg name="fake" default="True"/>
+  <arg name="port" default="8080"/>
+  <arg name="use_bridge" default="False"/>
+  <node pkg="pinky_fleet_station" exec="fake_state_pub" name="fake_state_pub" if="$(var fake)" output="screen">
+    <param name="mission" value="$(var mission)"/>
+    <param name="auto_start" value="False"/>
+  </node>
+  <include file="$(find-pkg-share pinky_fleet_station)/launch/fleet.launch.xml">
+    <arg name="mission" value="$(var mission)"/>
+    <arg name="use_gui" value="False"/>
+    <arg name="use_bridge" value="$(var use_bridge)"/>
+  </include>
+  <node pkg="pinky_fleet_station" exec="web_node" name="fleet_web" output="screen">
+    <param name="mission" value="$(var mission)"/>
+    <param name="port" value="$(var port)"/>
+    <param name="fake" value="$(var fake)"/>
+  </node>
+</launch>

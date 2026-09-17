@@ -1,0 +1,28 @@
+* { box-sizing: border-box; }
+body { margin: 0; background: #0b1220; color: #e2e8f0; font: 15px system-ui; }
+header { padding: 22px 28px; border-bottom: 1px solid #334155; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+h1 { margin: 0; font-size: 24px; } h2 { font-size: 19px; }
+small, .hint { color: #a6b7cf; } .hint { font-size: 13px; line-height: 1.7; }
+main { display: grid; grid-template-columns: minmax(0, 1fr) 390px; gap: 22px; padding: 24px; }
+section, article { background: #141f32; border: 1px solid #334155; border-radius: 12px; padding: 18px; }
+article { margin-bottom: 15px; border-top: 3px solid var(--robot-color, #64748b); }
+button, input, select { font: inherit; padding: 9px; border: 1px solid #475569; border-radius: 6px; background: #23324c; color: white; margin: 4px 2px; }
+button { cursor: pointer; } button:hover { background: #385274; } button:focus-visible { outline: 2px solid #38bdf8; }
+.danger { background: #922d49; } .badge { color: #fbbf24; font-size: 13px; }
+canvas { display: block; width: 100%; height: 530px; background: #09101c; touch-action: none; cursor: crosshair; }
+fieldset { border: 1px solid #40516a; border-radius: 8px; margin: 12px 0; padding: 8px; }
+legend { color: #cbd5e1; } label { display: inline-block; }
+input[type=number] { width: 88px; } input[type=file] { max-width: 100%; }
+.wide { display: block; } .wide input { display: block; width: 100%; }
+#message { padding: 12px 28px; color: #fbbf24; min-height: 48px; }
+.warn { color: #fbbf24; } pre { white-space: pre-wrap; font-size: 12px; }
+summary { cursor: pointer; padding: 10px 0; } #coordinates { font-family: monospace; }
+@media (max-width: 1000px) { main { grid-template-columns: 1fr; } canvas { height: 420px; } }
+
+dialog { background: #141f32; color: #e2e8f0; border: 1px solid #64748b; border-radius: 12px; width: min(700px, 95vw); }
+dialog::backdrop { background: #0009; }
+#browse-list { max-height: 45vh; overflow: auto; }
+#browse-list button { display: block; width: 98%; text-align: left; }
+#browse-path { overflow-wrap: anywhere; } #browse-error { color: #fbbf24; }
+
+#runtime-panel { margin: 18px 24px 0; } button:disabled { opacity: .45; cursor: default; }

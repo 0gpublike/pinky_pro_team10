@@ -1,6 +1,7 @@
 """mission.yaml 로드 / 저장 / 검증.
 
-coordinator_node 와 gui_node 가 공유한다. ROS 에 의존하지 않아 단독 테스트가 가능하다.
+coordinator_node, gui_node, web_node가 공유한다. 일반 경로는 ROS 없이 읽을 수 있고,
+package:// 경로만 ROS 패키지 인덱스를 사용한다.
 """
 
 import copy
@@ -30,6 +31,24 @@ class MissionError(ValueError):
     """mission.yaml 의 내용이 잘못되었을 때."""
 
 
+def resolve_map_path(value):
+    """package://패키지/파일을 설치 위치로 변환한다. 기존 파일 경로도 지원한다."""
+    value = os.path.expandvars(os.path.expanduser(str(value)))
+    if not value.startswith('package://'):
+        return value
+    package, separator, relative = value[len('package://'):].partition('/')
+    if (not package or not separator or not relative
+            or '..' in relative.split('/') or relative.startswith('/')):
+        raise MissionError(f'잘못된 패키지 맵 경로: {value}')
+    # 일반 YAML은 ROS 설치 없이도 기존 파서로 읽을 수 있다.
+    try:
+        from ament_index_python.packages import get_package_share_directory
+        share = get_package_share_directory(package)
+    except (ImportError, LookupError) as exc:
+        raise MissionError(f'{package} 패키지를 빌드하고 install/setup.bash를 source하세요.') from exc
+    return os.path.join(share, relative)
+
+
 def _pose(raw, where):
     if raw is None:
         return {'x': 0.0, 'y': 0.0, 'yaw': 0.0}
@@ -49,8 +68,9 @@ class Mission:
 
     def __init__(self, data, path=None):
         self.path = path
-        self.map_yaml_path = os.path.expandvars(
-            os.path.expanduser(str((data.get('map') or {}).get('yaml_path', ''))))
+        self._map_reference = str((data.get('map') or {}).get('yaml_path', ''))
+        self.map_yaml_path = resolve_map_path(self._map_reference)
+        self._resolved_map_path = self.map_yaml_path
 
         self.defaults = dict(DEFAULT_DEFAULTS)
         self.defaults.update(data.get('defaults') or {})
@@ -116,8 +136,12 @@ class Mission:
     # --- 직렬화 -------------------------------------------------------
 
     def to_dict(self):
+        map_path = self.map_yaml_path
+        if (self._map_reference.startswith('package://')
+                and os.path.realpath(map_path) == os.path.realpath(self._resolved_map_path)):
+            map_path = self._map_reference
         return {
-            'map': {'yaml_path': self.map_yaml_path},
+            'map': {'yaml_path': map_path},
             'defaults': copy.deepcopy(self.defaults),
             'coordinator': copy.deepcopy(self.coordinator),
             'robots': [

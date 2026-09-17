@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!-- 웹 관리자가 도메인 77에서 실행하는 아레나와 두 로봇. 관제는 별도 프로세스다. -->
+<launch>
+    <arg name="world_name" default="fleet_arena.sdf"/>
+    <arg name="gui" default="True"/>
+    <arg name="spawn_delay" default="5.0"
+         description="가제보가 뜨기 전에 스폰하면 조용히 실패한다. 느린 PC 면 늘린다."/>
+
+    <include file="$(find-pkg-share pinky_fleet_sim)/launch/gz_world.launch.xml">
+        <arg name="world_name" value="$(var world_name)"/>
+        <arg name="gui" value="$(var gui)"/>
+    </include>
+
+    <!--
+      가제보 서버가 올라올 시간을 준다. ros_gz_sim 의 create 는 서버가 없으면
+      에러도 없이 그냥 실패한다.
+    -->
+    <timer period="$(var spawn_delay)">
+        <group scoped="true">
+        <include file="$(find-pkg-share pinky_fleet_station)/launch/web_gz_robot.launch.xml">
+            <arg name="namespace" value="pinky1"/>
+            <arg name="domain_id" value="10"/>
+            <arg name="x" value="-0.35"/>
+            <arg name="y" value="1.0"/>
+            <arg name="yaw" value="-1.5708"/>   <!-- 남쪽(통로 쪽)을 본다 -->
+        </include>
+        </group>
+
+        <group scoped="true">
+        <include file="$(find-pkg-share pinky_fleet_station)/launch/web_gz_robot.launch.xml">
+            <arg name="namespace" value="pinky2"/>
+            <arg name="domain_id" value="11"/>
+            <arg name="x" value="0.35"/>
+            <arg name="y" value="-1.0"/>
+            <arg name="yaw" value="1.5708"/>    <!-- 북쪽(통로 쪽)을 본다 -->
+        </include>
+        </group>
+    </timer>
+</launch>

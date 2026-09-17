@@ -1,0 +1,94 @@
+Panels:
+- Class: rviz_common/Displays
+  Name: Displays
+Visualization Manager:
+  Class: ''
+  Global Options:
+    Fixed Frame: map
+    Frame Rate: 30
+  Displays:
+  - Class: rviz_default_plugins/Grid
+    Name: Grid
+    Enabled: true
+    Cell Size: 1
+    Plane Cell Count: 20
+  - Class: rviz_default_plugins/Map
+    Name: pinky1 Map
+    Enabled: true
+    Topic:
+      Value: /pinky1/map
+      Depth: 5
+      Reliability Policy: Best Effort
+      Durability Policy: Transient Local
+    Alpha: 0.6
+  - Class: rviz_default_plugins/LaserScan
+    Name: pinky1 Scan
+    Enabled: true
+    Topic:
+      Value: /pinky1/scan
+      Depth: 5
+      Reliability Policy: Best Effort
+      Durability Policy: Volatile
+  - Class: rviz_default_plugins/Path
+    Name: pinky1 Path
+    Enabled: true
+    Topic:
+      Value: /pinky1/plan
+      Depth: 5
+      Reliability Policy: Best Effort
+      Durability Policy: Volatile
+  - Class: rviz_default_plugins/RobotModel
+    Name: pinky1
+    Enabled: true
+    Description Source: Topic
+    Description Topic:
+      Value: /pinky1/robot_description
+      Durability Policy: Transient Local
+      Reliability Policy: Reliable
+    TF Prefix: pinky1
+  - Class: rviz_default_plugins/Map
+    Name: pinky2 Map
+    Enabled: true
+    Topic:
+      Value: /pinky2/map
+      Depth: 5
+      Reliability Policy: Best Effort
+      Durability Policy: Transient Local
+    Alpha: 0.6
+  - Class: rviz_default_plugins/LaserScan
+    Name: pinky2 Scan
+    Enabled: true
+    Topic:
+      Value: /pinky2/scan
+      Depth: 5
+      Reliability Policy: Best Effort
+      Durability Policy: Volatile
+  - Class: rviz_default_plugins/Path
+    Name: pinky2 Path
+    Enabled: true
+    Topic:
+      Value: /pinky2/plan
+      Depth: 5
+      Reliability Policy: Best Effort
+      Durability Policy: Volatile
+  - Class: rviz_default_plugins/RobotModel
+    Name: pinky2
+    Enabled: true
+    Description Source: Topic
+    Description Topic:
+      Value: /pinky2/robot_description
+      Durability Policy: Transient Local
+      Reliability Policy: Reliable
+    TF Prefix: pinky2
+  Tools:
+  - Class: rviz_default_plugins/Interact
+  - Class: rviz_default_plugins/MoveCamera
+  - Class: rviz_default_plugins/Select
+  Views:
+    Current:
+      Class: rviz_default_plugins/TopDownOrtho
+      Scale: 150
+      Target Frame: map
+Window Geometry:
+  Width: 1000
+  Height: 750

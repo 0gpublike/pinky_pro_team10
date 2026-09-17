@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pinky Fleet 웹 관제</title>
+<link rel="stylesheet" href="/web.css">
+<header>
+  <div><h1>● Pinky Fleet</h1><small>ROS 2 · 웹 관제</small></div>
+  <button id="connect">조작 연결</button><button id="disconnect">연결 해제</button>
+  <button id="go-all">동시 출발</button><button id="init-all">초기 위치 일괄 전송</button>
+  <button id="stop" class="danger">전체 주행 취소</button><span id="connection">조회 모드</span>
+</header>
+<section id="runtime-panel" hidden>
+  <label>연습 환경 <select id="runtime-mode"><option value="sim">Gazebo 시뮬레이터</option><option value="real">실제 Pinky Pro</option></select></label>
+  <button id="runtime-start">연습 환경 시작</button><button id="runtime-stop">연습 환경 종료</button>
+  <button id="runtime-rqt">rqt 열기</button><strong id="runtime-status">준비 중</strong>
+  <p class="hint">시뮬레이터: Gazebo + RViz 자동 실행 · 실물: 관제 연결만 시작 (출발은 별도 버튼) · rqt 창은 이 PC에 열립니다.</p>
+  <p id="runtime-error" class="warn"></p>
+</section>
+<div id="message" role="status">상태를 불러오는 중…</div>
+<main>
+  <section>
+    <h2>지도와 경로 <span id="simulation" class="badge"></span></h2>
+    <div class="toolbar">
+      <label>로봇 <select id="robot"></select></label>
+      <label>선택 모드 <select id="mode"><option value="goal">목표 위치</option><option value="initial_pose">초기 위치</option><option value="pan">지도 이동</option></select></label>
+      <button id="fit">화면에 맞추기</button><button id="zoom-in">확대 +</button><button id="zoom-out">축소 −</button>
+    </div>
+    <p class="hint">클릭 후 드래그해 위치와 방향을 선택하세요. 선택 후 전송 버튼을 누릅니다.<br>실선 화살표: 목표 · 점선 화살표: 초기 위치 · 원: 로봇 현재 위치 · 휠: 확대/축소</p>
+    <canvas id="map" aria-label="로봇 지도. 드래그로 위치와 방향 선택"></canvas>
+    <p id="coordinates">지도 위에 마우스를 올려 좌표를 확인하세요.</p>
+    <p id="mapstatus"></p>
+    <details open><summary>맵 / 미션 파일</summary>
+      <label class="wide">관제 PC의 맵 YAML 경로 <input id="map-path" type="text" placeholder="~/maps/map.yaml"></label>
+      <button id="map-browse">맵 파일 선택…</button><button id="map-open">입력 경로의 맵 열기</button><button id="map-reload">맵 다시 불러오기</button><button id="map-send">로봇에 맵 이름 전송</button>
+      <p class="hint">맵 열기는 화면만 변경합니다. 로봇에 전송하면 주행을 취소하고 맵 이름을 보냅니다. 로봇에도 같은 맵 파일이 필요합니다.</p>
+      <label>미션 YAML 불러오기 <input type="file" id="mission-file" accept=".yaml,.yml"></label>
+      <button id="save">미션 YAML 다운로드</button><p id="file-status" role="status">파일 작업은 조작 연결 없이 사용할 수 있습니다.</p>
+    </details>
+    <details><summary>교착 제어 상태</summary><pre id="coordinator"></pre></details>
+  </section>
+  <aside id="cards"></aside>
+</main>
+<dialog id="file-browser">
+  <h2>관제 PC의 맵 YAML 선택</h2>
+  <p>폴더를 열어 맵 YAML 파일을 선택하세요. 이미지 파일은 YAML 옆 경로에서 읽습니다.</p>
+  <p id="browse-path"></p><button id="browse-up">상위 폴더</button>
+  <div id="browse-list"></div><p id="browse-error" role="status"></p>
+  <button id="browse-close">닫기</button>
+</dialog>
+<script src="/web.js"></script>
+</html>
