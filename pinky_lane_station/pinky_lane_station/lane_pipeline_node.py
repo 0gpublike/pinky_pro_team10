@@ -22,7 +22,7 @@ from pinky_lane_msgs.msg import LanePath, SceneState
 from .detectors import create_detector
 from .lane_mission import LaneMissionError, load_lane_mission
 from .lane_target import QUALITY_STALE, LaneTargetEstimator, TargetParams
-from .pipeline_image import draw_debug, mask_top
+from .pipeline_image import crop_top, draw_debug, shift_instances
 
 try:
     import cv2
@@ -44,7 +44,7 @@ def load_detector_config(path):
     target = TargetParams(**{k: v for k, v in (data.get('target') or {}).items()
                              if k in TargetParams.__dataclass_fields__})
     pipeline = {'max_rate': 10.0, 'stale_period': 0.3, 'stale_max_seconds': 2.0, 'warmup': True,
-                'mask_top_frac': 0.0, 'mask_fill': 0, 'debug_polygons': False}
+                'crop_top_frac': 0.0, 'debug_polygons': False}
     pipeline.update(data.get('pipeline') or {})
     return det, target, pipeline
 
@@ -77,8 +77,7 @@ class LanePipeline(Node):
         self._stale_max = float(pipe['stale_max_seconds'])
 
         self._stop_row_frac = float(target_params.crosswalk_stop_row_frac)
-        self._mask_frac = float(pipe['mask_top_frac'])          # 모델 학습과 같은 상위 마스킹
-        self._mask_fill = int(pipe['mask_fill'])
+        self._crop_frac = float(pipe['crop_top_frac'])          # 모델 학습과 같은 상위 crop
         self._debug_polygons = bool(pipe['debug_polygons'])
         self.detector = create_detector(det_cfg)
         if pipe.get('warmup', True):
@@ -106,7 +105,7 @@ class LanePipeline(Node):
         self.get_logger().info(
             f'lane_pipeline 시작: detector={self._det_name} robots={list(self._robots)} '
             f'max_rate={pipe["max_rate"]} stale={self._stale_period}s/{self._stale_max}s '
-            f'mask_top={self._mask_frac:.2f}')
+            f'crop_top={self._crop_frac:.2f}')
 
     def _now(self):
         return self.get_clock().now().nanoseconds * 1e-9
@@ -125,9 +124,10 @@ class LanePipeline(Node):
             self.get_logger().warn(f'{name}: 이미지 디코드 실패')
             return
         H, W = img.shape[:2]
-        # 추론 입력만 마스킹한다. 오버레이·저장은 원본(img) 그대로
-        masked = mask_top(img, self._mask_frac, self._mask_fill) if self._mask_frac > 0 else img
-        instances, infer_ms = self.detector.infer_timed(masked)
+        # 추론 입력만 상위 crop (학습 조건). 검출 좌표는 원본으로 되돌려서 lane_target·오버레이는 원본 기준
+        cropped, dy = crop_top(img, self._crop_frac)
+        instances, infer_ms = self.detector.infer_timed(cropped)
+        instances = shift_instances(instances, dy)
         r = rl.est.update(instances, W, H)
 
         rl.seq += 1
@@ -171,7 +171,7 @@ class LanePipeline(Node):
             self._publish_debug(name, img, instances, r, msg.header.stamp, infer_ms)
 
     def _publish_debug(self, name, img, instances, r, stamp, infer_ms=0.0):
-        dbg = draw_debug(img, instances, r, mask_frac=self._mask_frac, infer_ms=infer_ms,
+        dbg = draw_debug(img, instances, r, crop_frac=self._crop_frac, infer_ms=infer_ms,
                          stop_row_frac=self._stop_row_frac, draw_polygons=self._debug_polygons)
         ok, buf = cv2.imencode('.jpg', dbg, [int(cv2.IMWRITE_JPEG_QUALITY), 60])
         if not ok:
