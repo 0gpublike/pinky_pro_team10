@@ -90,8 +90,9 @@ def test_detector_yolo_class_map_matches_model_labels():
     ids = sorted(i for v in cm.values() for i in v)
     assert ids == [0, 1, 2, 3, 4, 5], ids                     # 모든 모델 클래스가 정확히 한 번
     pipe = cfg['pipeline']
-    assert abs(pipe['crop_top_frac'] - 0.30) < 1e-9                # 학습 조건(상위 30 % crop)과 동일
-    allowed = {'max_rate', 'stale_period', 'stale_max_seconds', 'warmup', 'crop_top_frac', 'debug_polygons'}
+    assert abs(pipe['mask_top_frac'] - 0.30) < 1e-9 and pipe['mask_fill'] == 0   # 학습 조건과 동일
+    allowed = {'max_rate', 'stale_period', 'stale_max_seconds', 'warmup',
+               'mask_top_frac', 'mask_fill', 'debug_polygons'}
     assert set(pipe) <= allowed, set(pipe) - allowed
     from pinky_lane_station.lane_target import TargetParams
     for key in cfg['target']:
