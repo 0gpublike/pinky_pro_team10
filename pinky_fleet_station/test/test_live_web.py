@@ -104,6 +104,14 @@ def test_dashboard_uses_normalized_design_lane_overlay_and_control_status():
     assert 'overhead-system-status' in html
 
 
+def test_dashboard_uses_current_figma_map_vector_and_placement():
+    root = Path(__file__).resolve().parents[1] / 'pinky_fleet_station/live_static'
+    svg = (root / 'fleet-lanes.svg').read_text()
+    css = (root / 'style.css').read_text()
+    assert 'width="5399.5" height="3011.5"' in svg
+    assert 'left:4.205776%;top:6.509722%;width:91.831859%;height:98.327991%' in css
+
+
 @pytest.mark.parametrize('timeout', [0, -1, float('nan'), float('inf')])
 def test_invalid_timeout(timeout):
     with pytest.raises(ValueError):
