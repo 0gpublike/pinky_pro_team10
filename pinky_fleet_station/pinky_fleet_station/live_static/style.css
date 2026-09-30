@@ -9,7 +9,7 @@
 @media(max-width:800px){.visuals{grid-template-columns:1fr}}
 
 .map-heading{display:flex;justify-content:space-between;gap:10px}
-.map5-board{position:relative;height:100cqh;max-width:100cqw;aspect-ratio:236 / 128;display:grid;place-items:center;background:#858e98}
+.map5-board{position:relative;width:min(100cqw,calc(100cqh * 236 / 128));aspect-ratio:236 / 128;display:grid;place-items:center;background:#858e98}
 /* PGM의 흰 자유 공간은 회색 바탕에 multiply로 녹이고, 검은 점유 셀만 남긴다. */
 .map5-board>#map5-image{width:100%;height:100%;object-fit:contain;image-rendering:pixelated;mix-blend-mode:multiply}
 .map5-board .design-lane-art{position:absolute;left:4.205776%;top:6.509722%;width:91.831859%;height:98.327991%;object-fit:fill;opacity:1;pointer-events:none}

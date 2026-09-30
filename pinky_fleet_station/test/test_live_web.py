@@ -110,6 +110,8 @@ def test_dashboard_uses_current_figma_map_vector_and_placement():
     css = (root / 'style.css').read_text()
     assert 'width="5399.5" height="3011.5"' in svg
     assert 'left:4.205776%;top:6.509722%;width:91.831859%;height:98.327991%' in css
+    assert 'width:min(100cqw,calc(100cqh * 236 / 128));aspect-ratio:236 / 128' in css
+    assert '.map5-board{position:relative;height:100cqh' not in css
 
 
 @pytest.mark.parametrize('timeout', [0, -1, float('nan'), float('inf')])
