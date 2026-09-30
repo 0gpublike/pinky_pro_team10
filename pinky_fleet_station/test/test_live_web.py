@@ -1,5 +1,9 @@
 """Read-only boundary, independent freshness, JSON and HTTP integration."""
 import ast
+import base64
+import hashlib
+import struct
+import xml.etree.ElementTree as ET
 import json
 from pathlib import Path
 import sys
@@ -104,14 +108,19 @@ def test_dashboard_uses_normalized_design_lane_overlay_and_control_status():
     assert 'overhead-system-status' in html
 
 
-def test_dashboard_uses_current_figma_map_vector_and_placement():
+def test_dashboard_preserves_supplied_lane_image():
     root = Path(__file__).resolve().parents[1] / 'pinky_fleet_station/live_static'
-    svg = (root / 'fleet-lanes.svg').read_text()
-    css = (root / 'style.css').read_text()
-    assert 'width="5399.5" height="3011.5"' in svg
-    assert 'left:4.205776%;top:6.509722%;width:91.831859%;height:98.327991%' in css
-    assert 'width:min(100cqw,calc(100cqh * 236 / 128));aspect-ratio:236 / 128' in css
-    assert '.map5-board{position:relative;height:100cqh' not in css
+    svg = ET.parse(root / 'fleet-lanes.svg').getroot()
+    image = svg.find('{http://www.w3.org/2000/svg}image')
+    uri = image.attrib['{http://www.w3.org/1999/xlink}href']
+    assert uri.startswith('data:image/png;base64,')
+    png = base64.b64decode(uri.split(',', 1)[1], validate=True)
+    assert png[:8] == b'\x89PNG\r\n\x1a\n'
+    width, height = struct.unpack('>II', png[16:24])
+    assert (width, height) == (5459, 2905)
+    assert svg.attrib['viewBox'] == f'0 0 {width} {height}'
+    # Exact user export: catches reintroduction of the outlined markers.
+    assert hashlib.sha256(png).hexdigest() == '5d90ed705f1902424a02fa2fc8960e8059a4aed18eb7372f6fbd32b8116be1d9'
 
 
 @pytest.mark.parametrize('timeout', [0, -1, float('nan'), float('inf')])
